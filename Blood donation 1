@@ -1,1 +1,24 @@
+// Code for entering blood donation data
+// You may create a form for this in WordPress admin or a custom page
 
+// Code for retrieving blood availability
+// Customize as per your needs, e.g., display in a specific page or widget
+$args = array(
+    'post_type' => 'blood_donation_query',
+    'posts_per_page' => -1,
+);
+
+$blood_queries = new WP_Query($args);
+
+if ($blood_queries->have_posts()) {
+    while ($blood_queries->have_posts()) {
+        $blood_queries->the_post();
+        $query_title = get_the_title();
+        $blood_type = detect_blood_type($query_title);
+        echo 'Blood Type: ' . $blood_type . '<br>';
+        // You can display other relevant information here
+    }
+    wp_reset_postdata();
+} else {
+    echo 'No blood donation queries found.';
+}
