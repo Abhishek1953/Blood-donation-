@@ -1,0 +1,51 @@
+// Register Custom Post Type
+function register_blood_donation_query_post_type() {
+    $labels = array(
+        'name' => 'Blood Donation Queries',
+        'singular_name' => 'Blood Donation Query',
+    );
+
+    $args = array(
+        'label' => 'Blood Donation Queries',
+        'labels' => $labels,
+        'supports' => array('title', 'editor'),
+        'public' => true,
+        'has_archive' => true,
+        'rewrite' => array('slug' => 'blood_donation_query'),
+    );
+
+    register_post_type('blood_donation_query', $args);
+}
+
+add_action('init', 'register_blood_donation_query_post_type');
+
+// Register Custom Taxonomy
+function register_blood_types_taxonomy() {
+    $labels = array(
+        'name' => 'Blood Types',
+        'singular_name' => 'Blood Type',
+    );
+
+    $args = array(
+        'label' => 'Blood Types',
+        'labels' => $labels,
+        'hierarchical' => true,
+        'public' => true,
+        'rewrite' => array('slug' => 'blood_types'),
+    );
+
+    register_taxonomy('blood_types', 'blood_donation_query', $args);
+}
+
+add_action('init', 'register_blood_types_taxonomy');
+
+// Function to detect blood type
+function detect_blood_type($query) {
+    $blood_types = array('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-');
+    foreach ($blood_types as $type) {
+        if (stripos($query, $type) !== false) {
+            return $type;
+        }
+    }
+    return 'Unknown';
+}
